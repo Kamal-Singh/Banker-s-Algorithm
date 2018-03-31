@@ -2,6 +2,7 @@
 #include<unistd.h>
 #include<pthread.h>
 #include<stdbool.h>
+#include<stdlib.h>
 #define MAXR 100
 #define MAXN 100
 const int maxn,maxr;
@@ -10,7 +11,7 @@ int available[MAXR]={0}; 	//To store the available instances of the ith resource
 int max[MAXN][MAXR]; 		//To store the max number of resources of a given type,the process will allocate. 
 int allocated[MAXN][MAXR]; 	//To store the allocated instance of each resource for the following process.
 int need[MAXN][MAXR];		//To store the required number of instances of a resource a process needs in order to get completed.
-bool is_finished[MAXN];	//To control each thread.
+int  state[MAXN];			//To control each thread.
 void init()
 {
 	//Initialize all the shared data to 0
@@ -25,7 +26,7 @@ void init()
 	}
 	//All the processes in the beginning are unfinished.
 	for(int i=0;i<MAXN;i++)
-		is_finished[i]=false;
+		state[i]=0;
 }
 void menu()
 {
@@ -33,8 +34,9 @@ void menu()
 	printf("--------------------------Banker's Alogrithm--------------------------\n");
 	printf("1. Check Status\n");
 	printf("2. Allocate Resources\n");
-	printf("3. See Safe Sequence\n");
-	printf("4. Exit\n");
+	printf("3. Terminate a process\n");
+	printf("4. See Safe Sequence\n");
+	printf("5. Exit\n");
 	printf("Enter one of the option = ");
 }
 void getch()
@@ -45,19 +47,8 @@ void getch()
 	read(0, &c, 1);
 		return;
 }
-void show_status()
+void status_module()
 {
-	system("clear");
-	//Total system resources
-	printf("\tTotal system resources:\n\t");
-	for(int i=0;i<maxr;i++)
-		printf("R%d ",i);
-	printf("\nFree\t");
-	for(int i=0;i<maxr;i++)
-		printf("%d  ",total_resources[i]);
-
-
-	//Available system resources
 	printf("\n\n\n\tAvailable system resources:\n\t");
 	for(int i=0;i<maxr;i++)
 		printf("R%d ",i);
@@ -73,7 +64,7 @@ void show_status()
 	{
 		printf("\nP%d\t",i);
 		for(int j=0;j<maxr;j++)
-			printf("%d  ",need[i][j]);	
+			printf("%d  ",allocated[i][j]);	
 	}
 
 	//Currently allocated resources
@@ -97,7 +88,71 @@ void show_status()
 		for(int j=0;j<maxr;j++)
 			printf("%d  ",need[i][j]);	
 	}
+}
+void show_status()
+{
+	system("clear");
+	//Total system resources
+	printf("\tTotal system resources:\n\t");
+	for(int i=0;i<maxr;i++)
+		printf("R%d ",i);
+	printf("\nFree\t");
+	for(int i=0;i<maxr;i++)
+		printf("%d  ",total_resources[i]);
+
+	status_module();
+
+	//Available system resources
+		printf("\nPress enter to go back......");
 	return;
+}
+void initiate_request()
+{
+	system("clear");
+	int thread_id,res[maxr];
+	while(1)
+	{
+	printf("Enter the process number = ");
+	scanf("%d",&thread_id);
+	if(!(thread_id>=0 && thread_id<maxn) || state[thread_id]==-1)
+	printf("Error! Thread doesn't exist!!!\n");
+	else
+	break;
+	}
+	state[thread_id]=1;
+	while(state[thread_id]==1);
+	return;
+
+}
+void request(int thread_id)
+{
+	int res[maxr];
+	status_module();
+	printf("\nEnter the values of resources for the process %d = \n",thread_id);
+	for(int i=0;i<maxr;i++)
+	{
+		scanf("%d",&res[i]);
+	}
+	return;
+}
+void *generic_thread(void *data)
+{
+	int pthread_id=(int)data;
+	while(1)
+	{
+		if(state[pthread_id]==0)
+		continue;
+		else if(state[pthread_id]==1)
+		{
+			request(pthread_id);
+			state[pthread_id]=0;
+		}
+		else if(state[pthread_id]==2)
+		{
+			state[pthread_id]==-1;
+			pthread_exit(NULL);
+		}
+	}
 }
 int main()
 {
@@ -113,10 +168,10 @@ int main()
 		scanf("%d",&total_resources[i]);
 		available[i]=total_resources[i];
 	}
-	printf("Enter the maximum number of instance's of each resource the processes reqiure = \n");
+	printf("Enter the maximum number of instance's of each resource the processes require = \n");
 	for(i=0;i<maxn;i++)
 	{
-		printf("Enter the resources values for process P%d = ",i);
+		printf("Enter the resources requirement for process P%d = ",i);
 		for(j=0;j<maxr;j++)
 			{
 				scanf("%d",&max[i][j]);
@@ -129,6 +184,10 @@ int main()
 				}
 			}
 	}
+	pthread_t threads[maxn];
+	//Creating maxn threads.
+	for(i=0;i<maxn;i++)
+		pthread_create(&threads[i],NULL,generic_thread,(void *)i);
 	while(1)
 	{
 		menu();
@@ -139,7 +198,10 @@ int main()
 				show_status();
 				getch();
 				continue;
-			case 4:
+			case 2:
+				initiate_request();
+				continue;
+			case 5:
 				printf("Program terminated press enter to exit.........\n");
 				getch();
 				return 0;
