@@ -1,3 +1,4 @@
+//Function which prints the main menu.
 void menu()
 {
 	system("clear");
@@ -9,6 +10,8 @@ void menu()
 	printf("5. Exit\n");
 	printf("Enter one of the option = ");
 }
+
+//Shows the current state of the simulation.
 void status_module()
 {
 	printf("\n\n\n\tAvailable system resources:\n\t");
@@ -57,6 +60,8 @@ void status_module()
 		 	printf("--Terminated");
 	}
 }
+
+//For Showing status.
 void show_status()
 {
 	system("clear");

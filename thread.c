@@ -1,3 +1,4 @@
+//Function to make a copy of the global variables. 
 void make_copy(int temp_available[maxr],int temp_allocated[maxn][maxr],int temp_need[maxn][maxr])
 {
 	for(int i=0;i<maxn;i++)
@@ -11,6 +12,8 @@ void make_copy(int temp_available[maxr],int temp_allocated[maxn][maxr],int temp_
 	for(int i=0;i<maxr;i++)
 		temp_available[i]=available[i];
 }
+
+//Function to terminate a thread.
 void terminate(int thread_id)
 {
 	for(int i=0;i<maxr;i++)
@@ -20,6 +23,8 @@ void terminate(int thread_id)
 	}
 		return;
 }
+
+//Function to begin termination of a thread.
 void begin_termination()
 {
 	system("clear");
@@ -34,12 +39,14 @@ void begin_termination()
 		else
 			break;
 	}
-	state[thread_id]=2;
-	while(state[thread_id]==2);
+	state[thread_id]=2;  		//Change the state of the thread to initiate termination.
+	while(state[thread_id]==2); //Wait while terminate() does it's work.
 	printf("Process Terminated!!!");
 	getch();
 	return;
 }
+
+//Function to check after resource allocation if the thread is completed or not.
 void check_termination(int thread_id)
 {
 	for(int i=0;i<maxr;i++)
@@ -53,6 +60,8 @@ void check_termination(int thread_id)
 	while(state[thread_id]==2);
 	return;
 }
+
+//Algorithm to check system's safe state and to print safe sequence.
 bool safety_algorithm(int temp_available[maxr],int temp_allocated[maxn][maxr],int temp_need[maxn][maxr])
 {
 	bool is_finished[maxn],found;
@@ -98,21 +107,26 @@ bool safety_algorithm(int temp_available[maxr],int temp_allocated[maxn][maxr],in
 		}
 	}
 	printf("\nThe Safe Sequence is:\n");
-	for(int i=terminated;i<maxn;i++)
+	for(int i=terminated;i<maxn-1;i++)
 	{
-		printf("%d ",safe_sequence[i]);
-		if(i!=maxr-1 || (maxn-terminated)!=1)
+		printf("P%d ",safe_sequence[i]);
 			printf("-> ");
 	}
+	printf("P%d",safe_sequence[maxn-1]);
 	return true;
 }
+
+//Function invokes safety_algorithm to print safe sequence on copy of global variables.
 void show_safe_state()
 {
 	int temp_available[maxr],temp_allocated[maxn][maxr],temp_need[maxn][maxr];
 	make_copy(temp_available,temp_allocated,temp_need);	
 	safety_algorithm(temp_available,temp_allocated,temp_need);
+	getch();
 	return;
 }
+
+//Calls safety_algorithm() and allocate resources only if it returns true.
 void check_request(int thread_id,int res[])
 {
 	int temp_available[maxr],temp_allocated[maxn][maxr],temp_need[maxn][maxr];
@@ -139,6 +153,8 @@ void check_request(int thread_id,int res[])
 	}
 	return;
 }
+
+//Function used by thread to make a request for resource allocation
 void request(int thread_id)
 {
 	int res[maxr];
@@ -159,6 +175,8 @@ void request(int thread_id)
 	getch();
 	return;
 }
+
+//Funciton to initiate a resource request.
 void initiate_request()
 {
 	system("clear");
@@ -177,6 +195,8 @@ void initiate_request()
 	check_termination(thread_id);
 	return;
 }
+
+//The basic structure used to make all the threads.
 void *generic_thread(void *data)
 {
 	int pthread_id=(int *)data;

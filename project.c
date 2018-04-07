@@ -12,9 +12,9 @@ int max[MAXN][MAXR]; 		//To store the max number of resources of a given type,th
 int allocated[MAXN][MAXR]; 	//To store the allocated instance of each resource for the following process.
 int need[MAXN][MAXR];		//To store the required number of instances of a resource a process needs in order to get completed.
 int state[MAXN];			//To control each thread.
-void getch();
-#include "ui.c"
-#include "thread.c"
+void getch();				//Self defined getch().
+#include "ui.c"				//File contains funcitons related to UI
+#include "thread.c"			//File contains functions implementation related to threads.
 void init()
 {
 	//Initialize all the shared data to 0
@@ -31,6 +31,8 @@ void init()
 	for(int i=0;i<MAXN;i++)
 		state[i]=0;
 }
+
+//unix doesn't support getch(), self defined getch().
 void getch()
 {	
 	char c;
@@ -93,7 +95,7 @@ int main()
 				show_safe_state();
 				break;
 			case 5:
-				printf("Program terminated press enter to exit.........\n");
+				printf("Simulation Terminated, press enter to exit.........\n");
 				getch();
 				return 0;
 			default:
@@ -101,6 +103,17 @@ int main()
 				getch();
 				break;
 		}
+		int i;
+		for(i=0;i<maxn;i++)
+		{
+			if(state[i]!=-1)
+				break;
+		}
+		if(i==maxn)
+		break;
 	}
+	system("clear");
+	printf("There are no more process left in the system. Press enter key to exit simulation....");
+	getch();
 	return 0;
 }
