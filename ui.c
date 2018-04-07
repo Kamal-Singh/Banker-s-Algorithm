@@ -26,7 +26,9 @@ void status_module()
 	{
 		printf("\nP%d\t",i);
 		for(int j=0;j<maxr;j++)
-			printf("%d  ",allocated[i][j]);	
+			printf("%d  ",allocated[i][j]);
+		if(state[i]==-1)
+		printf("--Terminated");	
 	}
 
 	//Currently allocated resources
@@ -38,6 +40,8 @@ void status_module()
 		printf("\nP%d\t",i);
 		for(int j=0;j<maxr;j++)
 			printf("%d  ",max[i][j]);	
+		if(state[i]==-1)
+		 	printf("--Terminated");
 	}
 
 	//Resources needed to complete execution by each process
@@ -49,6 +53,8 @@ void status_module()
 		printf("\nP%d\t",i);
 		for(int j=0;j<maxr;j++)
 			printf("%d  ",need[i][j]);	
+		if(state[i]==-1)
+		 	printf("--Terminated");
 	}
 }
 void show_status()

@@ -86,6 +86,12 @@ int main()
 			case 2:
 				initiate_request();
 				break;
+			case 3:
+				begin_termination();
+				break;
+			case 4:
+				show_safe_state();
+				break;
 			case 5:
 				printf("Program terminated press enter to exit.........\n");
 				getch();
