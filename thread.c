@@ -16,11 +16,13 @@ void make_copy(int temp_available[maxr],int temp_allocated[maxn][maxr],int temp_
 //Function to terminate a thread.
 void terminate(int thread_id)
 {
+	pthread_mutex_lock(&m);
 	for(int i=0;i<maxr;i++)
 	{
 		available[i]+=allocated[thread_id][i];
 		allocated[thread_id][i]=0;
 	}
+	pthread_mutex_unlock(&m);
 		return;
 }
 
@@ -140,12 +142,14 @@ void check_request(int thread_id,int res[])
 	if(safety_algorithm(temp_available,temp_allocated,temp_need))
 	{
 		printf("\nResources allocated!!\n");
+		pthread_mutex_lock(&m);
 		for(int i=0;i<maxr;i++)
 		{
 			allocated[thread_id][i]+=res[i];
 			need[thread_id][i]-=res[i];
 			available[i]-=res[i];
 	   }	
+	   pthread_mutex_unlock(&m);
 	}
 	else
 	{

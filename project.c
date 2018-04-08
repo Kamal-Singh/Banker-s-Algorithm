@@ -6,6 +6,7 @@
 #define MAXR 100
 #define MAXN 100
 const int maxn,maxr;
+pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER; //Initialize Mutex lock.
 int total_resources[MAXR]={0};
 int available[MAXR]={0}; 	//To store the available instances of the ith resource.
 int max[MAXN][MAXR]; 		//To store the max number of resources of a given type,the process will allocate. 
