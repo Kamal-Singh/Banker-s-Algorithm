@@ -90,7 +90,6 @@ bool safety_algorithm(int temp_available[maxr],int temp_allocated[maxn][maxr],in
                 for (j=0;j<maxr;j++)
                     if (temp_need[i][j]>temp_available[j])
                         {
-                        	printf("%d %d",temp_need[i][j],temp_available[j]);
                         	break;
                         }
                 if (j==maxr)
